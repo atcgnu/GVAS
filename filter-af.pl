@@ -6,7 +6,7 @@ use FindBin qw($Bin);
 use Getopt::Std;
 use lib ("$FindBin::RealBin");
 
-do resource.pm;
+do "$Bin/resource.pm";
 
 my ($vcf, $output, $config) = @ARGV;
 
@@ -162,10 +162,10 @@ sub filter_af {
 	my ($chr, $pos, $ref, $allele, $dbs) = @_;
 	my ($dbpp_file, $v_snv_num, $v_indel_num, $dbpph, $dbpp_ary_ref, @dbpp_query_results) = ('', 0, 0);
 	if(length($ref) == 1 && length($allele) == 1){
-                $dbpp_file="/home/shenyulan/Workspace/DEV/pipeline/rdresearch/v3.0.0/data/GRCh37/dbpp/dbpp.chr$chr.snv.db";
+                $dbpp_file="$_wfdata_{dbpp}/dbpp.chr$chr.snv.db";
                 $v_snv_num ++;
         }else{
-                $dbpp_file="/home/shenyulan/Workspace/DEV/pipeline/rdresearch/v3.0.0/data/GRCh37/dbpp/dbpp.chr$chr.indel.db";
+                $dbpp_file="$_wfdata_{dbpp}/dbpp.chr$chr.indel.db";
                 $v_indel_num ++;
         }
 
@@ -179,6 +179,7 @@ sub filter_af {
                 } @$dbpp_ary_ref;
                 $dbpph->disconnect();
         }
+
 	return ($v_snv_num, $v_indel_num, \@dbpp_query_results);
 }
 
