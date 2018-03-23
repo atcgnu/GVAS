@@ -125,7 +125,7 @@ sub screen {
 		foreach my $allele (split /,/, $alt){
 		$v_num  ++;
 
-		my ($temp_v_snv_num, $temp_v_indel_num, $ref_dbpp_query_results) = &filter_af($chr, $pos, $ref, $allele, $dbs);
+		my ($temp_v_snv_num, $temp_v_indel_num, $ref_dbpp_query_results) = &filter_concequence($chr, $pos, $ref, $allele, $dbs);
 		$v_snv_num += $temp_v_snv_num;
 		$v_indel_num += $temp_v_indel_num;
 		my @dbpp_query_results = @$ref_dbpp_query_results;

@@ -11,5 +11,6 @@ our %_wftool_ = (
 );
 
 our %_wfdata_ = (
-	dbpp => "/home/shenyulan/Workspace/DEV/pipeline/rdresearch/v3.0.0/data/GRCh37/dbpp"
+	dbpp => "/home/shenyulan/Workspace/DEV/pipeline/rdresearch/v3.0.0/data/GRCh37/dbpp",
+	dbsnp => "/home/shenyulan/Workspace/DEV/pipeline/rdresearch/v3.0.0/data/GRCh37/dbsnp"
 );
