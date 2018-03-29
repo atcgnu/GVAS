@@ -21,7 +21,7 @@ chomp $md5vcf;
 my (%pd_threshold) = &parseconfig($config);
 
 foreach (keys %pd_threshold){
-	$dbs .= "$_,";
+	$dbs .= "$_," unless $_ eq 'db_count_threshold';
 	$db_count ++;
 }
 
@@ -67,7 +67,7 @@ for my $ssig_chr (21)
 
 sub parseconfig {
 	my ($config) = @_;
-	my ($flag, $flag_pd, $config_app, $config_threshold);
+	my ($flag, $flag_pd, $config_default, $config_user_defined, $config_app, $config_threshold);
 	&mkopen('CFG', $config, "<");
 	while(<CFG>){
 		chomp;
@@ -84,9 +84,9 @@ sub parseconfig {
 
 #print "flag: $flag\n";
 
-		if($flag == 1){
+		if($flag_pd == 1 and $flag == 1){
 			$config_default .= "$_,";
-		}elsif($flag == 2){
+		}elsif($flag_pd == 1 and $flag == 2){
 			$config_user_defined .= "$_,";
 		}else{
 #			die "config erro: Population data, please check!\n";
@@ -95,6 +95,7 @@ sub parseconfig {
 
 	$config_app = $config_user_defined if $flag_pd == 0 and $flag == 2;
 	$config_app = $config_default if $flag_pd == 0 and $flag == 1;
+
 
 	map{
 		s/\s//g;
@@ -152,11 +153,13 @@ sub screen {
 			}
 			$i ++;
 		}
-
+#print "db_count_threshold: $pd_threshold{db_count_threshold}\n";
+		$is_pass = 'filter-HighAF'if $db_num > $pd_threshold{db_count_threshold};
+		
 		$af_info = '.' unless $af_info =~ /\w+/;
 		$af_info =~ s/;$//;
 
-		if ($is_pass eq 'HighAF'){
+		if ($is_pass eq 'filter-HighAF'){
 			$v_highaf_num ++ ;
 			if(length($ref) == 1 && length($allele) == 1){
 				$v_snv_highaf_num ++;
@@ -167,7 +170,7 @@ sub screen {
 		print OT "chr$chr\t$pos\t$rs\t$ref\t$allele\t$is_pass\t$db_num\t$af_info\n";
 		}
 	}
-	print OT2 "chr$sig_chr, total allele: $v_num (snv: $v_snv_num | indel: $v_indel_num ), high AF allele:$v_highaf_num (snv: $v_snv_highaf_num | indel: $v_indel_highaf_num )\n";
+	print OT2 "chr$sig_chr, total allele: $v_num (snv: $v_snv_num | indel: $v_indel_num ), filter-high AF allele:$v_highaf_num (snv: $v_snv_highaf_num | indel: $v_indel_highaf_num )\n";
 	print OT2 "gt5\t1to5\t01to1\t001to01\tnovel\tdb\n";
 	foreach (split /,/, $dbs){
 		print OT2 "$stat{$_}{'gt5'}\t$stat{$_}{'1to5'}\t$stat{$_}{'01to1'}\t$stat{$_}{'001to01'}\t$stat{$_}{'novel'}\t$_\n";
